@@ -1,0 +1,26 @@
+{
+  "address": {
+    "message": "Address"
+  },
+  "status": {
+    "message": "Status"
+  },
+  "old_OTP": {
+    "message": "Old"
+  },
+  "new_OTP": {
+    "message": "New"
+  },
+  "empty_OTP": {
+    "message": "N/A"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "manualAddress": {
+    "message": "Add a custom address"
+  }
+}
