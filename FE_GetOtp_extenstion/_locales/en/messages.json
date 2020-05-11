@@ -5,6 +5,9 @@
   "status": {
     "message": "Status"
   },
+  "otp": {
+    "message": "OTP"
+  },
   "old_OTP": {
     "message": "Old"
   },
@@ -16,6 +19,9 @@
   },
   "copy": {
     "message": "Copy"
+  },
+  "refresh": {
+    "message": "Refresh"
   },
   "delete": {
     "message": "Delete"

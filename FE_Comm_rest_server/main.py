@@ -84,9 +84,23 @@ def	getOTP(id):
             otpTable[id] = getOtpFromWeb(id)
 
     print(otpTable)
+    print("\n\n")
 
     retOTP["OTP"] = otpTable[id]
     return json.dumps(retOTP)
+
+####################################################################
+# refresh OTP from yopmail
+# curl -H "X-API-KEY:1qaz2wsx" -X GET http://localhost:5000/robot/mail/new-otp/snuh_dev
+@app.route('/robot/mail/new-otp/<id>')
+def	getNewOTP(id):
+    otpTable[id] = getOtpFromWeb(id)
+
+    print(otpTable)
+
+    retOTP = {"OTP" : otpTable[id]}
+
+    return json.dumps(retOTP)    
 
 ####################################################################
     

@@ -7,6 +7,7 @@ var Mail = function (customAddress) {
 	this.lastUsed = null;
 	this.id = mailList.counter++;
 	this.usageCount = 0;
+	this.OTP = "";
 	mailList.addMail(this);
 };
 
