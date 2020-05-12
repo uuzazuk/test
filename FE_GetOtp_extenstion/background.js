@@ -1,76 +1,71 @@
-var domain = "yopmail.com";
+class MailList {
+	constructor() {}
+	init() {
+		chrome.storage.sync.get("yh_mailList", (data) => {
+			if (data.yh_mailList) {
+				this.content = data.yh_mailList.content;
+				this.counter = data.yh_mailList.counter;
+			} else {
+				this.counter = counter ? counter : 0;
+				this.content = [];
+			}
+		})
+	}
 
-var Mail = function (customAddress) {
-	this.name = customAddress ? customAddress : randomMail();
-	this.address = customAddress ? customAddress : this.name + "@" + domain;
-	this.created = Date.now();
-	this.lastUsed = null;
-	this.id = mailList.counter++;
-	this.usageCount = 0;
-	this.OTP = "";
-	mailList.addMail(this);
-};
+	saveAndSync() {
+		chrome.storage.sync.set({"yh_mailList": this});
+	};
 
-var MailList = function(counter) {
-	var self = this;
-    chrome.storage.sync.get("yh_mailList", function(data) {
-        if (data.yh_mailList) {
-            self.content = data.yh_mailList.content;
-            self.counter = data.yh_mailList.counter;
-        } else {
-			self.counter = counter ? counter : 0;
-			self.content = [];
+	updateValues(newArray) {
+		this.content = newArray;
+		this.saveAndSync();
+	};
+
+	deleteMail(mail) {
+		for (let i = 0; i < this.content.length; i++) {
+			if (this.content[i].id === mail.id)
+				this.content.splice(i, 1);
 		}
-    })
+		this.saveAndSync();
+	};
+	addMail(mail) {
+		this.content.push(mail);
+		this.saveAndSync();
+	};
+	
+	updateMail(mail) {
+		for (let i = 0; i < this.content.length; i++) {
+			if (this.content[i].id === mail.id) {
+				this.content[i] = mail;
+			}
+		}
+		this.saveAndSync();
+	};
+	
 };
 
-var mailList = new MailList();
-
-function getMail(id) {
-	for (var i = 0; i < mailList.length; i++) {
-		if (mailList[i].id = id)
-			return mailList[i];
+class Mail {
+	constructor(customAddress, _mailList) {
+		this.name = customAddress;
+		this.address = customAddress;
+		this.created = Date.now();
+		this.lastUsed = null;
+		this.id = _mailList.counter++;
+		this.usageCount = 0;
+		this.OTP = "";
+		_mailList.addMail(this);
 	}
-	return null;
-}
-
-MailList.prototype.saveAndSync = function() {
-	chrome.storage.sync.set({"yh_mailList": this});
-};
-MailList.prototype.updateValues = function (newArray) {
-	this.content = newArray;
-	this.saveAndSync();
-};
-MailList.prototype.deleteMail = function(mail) {
-	for (var i = 0; i < this.content.length; i++) {
-		if (this.content[i].id === mail.id)
-			this.content.splice(i, 1);
-	}
-	this.saveAndSync();
-};
-MailList.prototype.addMail = function(mail) {
-	this.content.push(mail);
-	this.saveAndSync();
 };
 
-MailList.prototype.updateMail = function (mail) {
-    for (var i = 0; i < this.content.length; i++) {
-        if (this.content[i].id === mail.id) {
-            this.content[i] = mail;
-        }
-    }
-    this.saveAndSync();
-};
+let mailList = new MailList();
+mailList.init();
 
-function randomMail() {
-	return (Math.random()*1e32).toString(36);
-}
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		switch(request.action) {
 			case "generateNewMail":
-				var newMail = new Mail(request.value);
+				let newMail = new Mail(request.value, mailList);
 				sendResponse({message: "OK", mailList: mailList, newMail: newMail});
 				break;
 			case "updateMail":
